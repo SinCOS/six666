@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>主力资金动向观测站</title>
+    <meta name="keywords" content="主力资金 股票 大盘 净流入 分时DDX 逆势主力资金流">
+    <meta name="description" content="主力资金 股票 大盘 净流入 分时DDX 逆势主力资金流">
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/dataTable.bootstrap.min.css">
+
+</head>
+
+<style type="text/css">
+
+    .layui-nav-right {
+        position: absolute;
+        right: 0px;
+        top: 0;
+    }
+
+    .tb_body {
+        padding-left: 5px;
+    }
+</style>
+
+<body>
+    <div class="layui-layout layui-layout-admin" id='app'>
+        <div class="layui-header header">
+            <div class="layui-main" style="margin: 0px;">
+                <ul class="layui-nav ">
+                    <li class="layui-nav-item"><a href="javascript:void;">主力追踪</a></li>
+                    <li class="layui-nav-item">
+                        <a href="/datecenter.html">数据中心</a>
+
+                    </li>
+                    <li class="layui-nav-item"><a href="/news" _target="_blank">新闻中心</a></li>
+                    <li class="layui-nav-item"><a href="/echarts" _target="_blank">智能数据沙箱</a></li>
+                    <li class="layui-nav-item"><a href="">社区</a></li>
+                </ul>
+                <ul class="layui-nav layui-nav-right">
+                    <template v-if="loginIn ==  true">
+                        <li class="layui-nav-item">
+                            <a href="javascript:;" v-text="userInfo['username']"></a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="javascript:void;" @click="favorManger()">自选股板块</a></dd>
+                                <dd><a href="javascript:buy_vip();">购买VIP</a></dd>
+                                <dd><a href="javascript:shutdown();">退出</a></dd>
+                            </dl>
+                        </li>
+                    </template>
+                    <template v-else>
+                        <li class="layui-nav-item"><a href="javascript:login();">登录</a></li>
+                        <li class="layui-nav-item"><a href="javascript:register();">注册</a></li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree" lay-filter="demo">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">公共模块</a>
+                        <dl class="layui-nav-child">
+                            <dd class="layui-this"><a href="javascript:;" @click="favor_click(0,0)">默认</a></dd>
+
+                            <dd>
+                                <a href="javascript:;" v-bind:data="88" @click="favor_click(88,0);"> 创业板 </a>
+                            </dd>
+
+                            <dd>
+                                <a href="javascript:;" v-bind:data="92" @click="favor_click(92,0);"> 上证A股 </a>
+                            </dd>
+
+                            <dd>
+                                <a href="javascript:;" v-bind:data="93" @click="favor_click(93,0);"> 深圳A股 </a>
+                            </dd>
+
+                            <dd>
+                                <a href="javascript:;" v-bind:data="94" @click="favor_click(94,0);"> 中小板 </a>
+                            </dd>
+
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item ">
+                        <a href="javascript:;">自选股</a>
+                        <dl class="layui-nav-child">
+                            {-raw-}
+                            <template v-for="item in userFavor">
+                                <dd>
+                                    <a href="javascript:;" @click="favor_click(item.id,1)"> {{ item.name }}</a>
+                                </dd>
+
+                            </template>
+                            {-raw-}
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item ">
+                        <a href="javascript:;">VIP股票池</a>
+                        <dl class="layui-nav-child">
+
+
+
+                            <dd>
+                                <a href="javascript:;" v-bind:data="95" @click="vip_click(95)"> 测试组</a>
+                            </dd>
+
+
+                        </dl>
+                    </li>
+
+                    <!--<li class="layui-nav-item"><a href="">云市场</a></li>
+                    <li class="layui-nav-item"><a href="">社区</a></li> -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body tb_body" style="overflow-y:scroll;">
+            <div class="layui-progress layui-progress-big" lay-filter="demo" lay-showPercent="true">
+                <div class="layui-progress-bar" lay-percent="50%"></div>
+            </div>
+            <div class="layui-tab" lay-filter='sysctrl'>
+                <ul class="layui-tab-title">
+                    <li class="layui-this">净流入</li>
+                    <li class="">分时DDX</li>
+                    <li class="">逆势主力资金流</li>
+                </ul>
+                <div class="layui-tab-content" style="height:auto;">
+                    <div class="layui-tab-item layui-show">
+                        <datatables data="jlr" v-bind:reflushtbl='reflushTable' v-bind:tabindex="tabIndex" v-bind:parent_url="reflush_url"></datatables>
+                    </div>
+                    <div class="layui-tab-item">
+                        <datatables data="ddx" v-bind:tabindex="tabIndex" v-bind:parent_url="reflush_url"></datatables>
+                    </div>
+                    <div class="layui-tab-item">
+                        <datatables data="nszl" v-bind:tabindex="tabIndex" v-bind:parent_url="reflush_url"></datatables>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-footer">
+            copyright @ ssin
+        </div>
+        <div class="layer" id='favor' style="display:none;">
+            <ul class="list-group" id='favorul' style="padding:10px;">
+                <template v-for="(item,index) in userFavor">
+                    <li class="list-group-item" v-text='item.name' :class="{'active':favorIndex == item.id  }" @click="favor_select(item.id)"></li>
+                </template>
+            </ul>
+        </div>
+        <div id="favor_manger" style="display:none;">
+            <ul class="list-group" id='favorul' style="padding:10px;">
+                {-raw-}
+                <template v-for="(item,index) in userFavor">
+                    <li class="list-group-item"> {{item.name}} <button type="button" class="close" aria-label="Close" @click="rmGroup(item.id)"><span aria-hidden="true">&times;</span></button></li>
+                </template>
+                {-raw-}
+            </ul>
+        </div>
+
+        <div class="login-from" id='login_frm' style="display: none;">
+            <form class="layui-form" style="padding: 20px;">
+                <div class="layui-form-item ">
+                    <label class="layui-form-label ">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" required lay-verify="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item ">
+                    <label class="layui-form-label ">密 码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="password" required lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input ">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"><img src=""></div>
+                </div>
+                <div class="layui-form-item ">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit='' lay-filter="formDemo">立即提交</button>
+                        <a href="/user/forget " title="忘记密码 ">忘记密码</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="vip_frm" id='vip_frm' style="display:none;">
+            <div class="list-group">
+                <a class="list-group-item" href="/user/vip/order?month=1">1个月 <span class="pull-right">20元</span></a>
+                <a class="list-group-item" href="/user/vip/order?month=3">3个月 <span class="pull-right">55元</span></a>
+                <a class="list-group-item" href="/user/vip/order?month=6">6个月 <span class="pull-right">110元</span></a>
+                <a class="list-group-item" href="/user/vip/order?month=12">一年 <span class="pull-right">200元</span></a>
+            </div>
+        </div>
+        <div class="register_frm" id="register_frm" style="display: none;">
+            <form class="layui-form layui-form-pane" style="padding: 20px 15px 20px 0px;" method="POST">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" required lay-verify="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮 箱</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="email" required lay-verify="email" placeholder="请输入邮箱地址" autocomplete="off " class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"><img src=""></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密 码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" required lay-verify="pass" placeholder="请输入密码" autocomplete="off " class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"><img src=""></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码框</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="repasswd" required lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                    <!--<div class="layui-form-mid layui-word-aux">辅助文字</div>-->
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit='' lay-filter="regfrm">立即提交</button>
+                        <a href="/user/forget" title="已有帐号">已有帐号</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+<script type="text/x-template" id='datables'>
+    <table v-bind:id="id" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead v-if="data =='jlr'">
+            <tr>
+                <th rowspan="2" colspan="3">说明:委托20万以上，成交的金额算做主力流入流出资金</th>
+                <th colspan="2">实时累计（万元）</th>
+                <th colspan="3">1分钟</th>
+                <th>3分钟</th>
+                <th> </th>
+                <th></th>
+            </tr>
+            <tr>
+                <th colspan="2">15：00-9：30</th>
+                <th v-text="time.last_three"></th>
+                <th v-text="time.last_two"></th>
+                <th v-text="time.last_one"></th>
+                <th v-text="time.last_three + '-' + time.last_one"></th>
+                <th> </th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th style="width: 50px;">排名</th>
+                <th style="width: 70px;">股票代码</th>
+                <th style="width: 70px;">股票名称</th>
+                <th style="width: 70px;" id="tab1">流入占比</th>
+                <th style="width: 70px;" id="tab2">总净流入</th>
+                <th style="width: 70px;" id="tab3">净流入</th>
+                <th style="width: 70px;">净流入</th>
+                <th style="width: 70px;">净流入</th>
+                <th style="width: 70px;" id="tab4">净流入</th>
+                <th style="width: 20px;">涨幅</th>
+                <th style="width: 20px;">涨速</th>
+                <th style="width: 30px;">操作</th>
+            </tr>
+        </thead>
+        <template v-else>
+            <thead v-if="data =='ddx'">
+                <tr>
+                    <th rowspan="2" colspan="3">说明:委托20万以上，成交的金额算做主力流入流出资金</th>
+                    <th colspan='2'>实时累计（万元）</th>
+                    <th colspan="3">1分钟</th>
+                    <th>3分钟</th>
+                    <th> </th>
+
+                </tr>
+                <tr>
+                    <th colspan='2'>15：00-9：30</th>
+                    <th v-text="time.last_three"></th>
+                    <th v-text="time.last_two"></th>
+                    <th v-text="time.last_one"></th>
+                    <th v-text="time.last_three + '-' + time.last_one"></th>
+                    <th> </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>排名</th>
+                    <th>股票代码</th>
+                    <th>股票名称</th>
+                    <th>流入占比 %</th>
+                    <th>总DDX</th>
+                    <th>DDX</th>
+                    <th>DDX</th>
+                    <th>DDX</th>
+                    <th>DDX</th>
+                    <th>涨幅</th>
+                    <th>涨速</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <thead v-else>
+                <tr>
+                    <th colspan="12">说明:委托20万以上，成交的金额算做主力流入流出资金</th>
+                </tr>
+
+                <tr>
+                    <th style="width: 10px;">排名</th>
+                    <th style="width: 80px;">股票代码</th>
+                    <th style="width: 100px;">股票名称</th>
+                    <th style="width: 130px;">大盘下跌时买入累计（万元)</th>
+                    <th style="width: 130px;">大盘上涨时卖出累计（万元)</th>
+                    <th style="width: 130px;">逆市主力资金净流向（万元）</th>
+                    <th style="width: 130px;">进货次数(240/x)</th>
+                    <th style="width: 130px;">出货次数(240/x)</th>
+                    <th style="width: 130px;" id="tab4">进出差值(240/x)</th>
+                    <th style="width: 60px;">涨幅</th>
+                    <th style="width: 60px;">涨速</th>
+                    <th style="width: 60px;">操作</th>
+                </tr>
+            </thead>
+        </template>
+
+    </table>
+
+</script>
+<script src="static/js/vue.min.js"></script>
+<script src="static/js/vue-resource.min.js"></script>
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/datatables/datatables.js"></script>
+<script type="text/javascript" src="/static/js/table.js?v1"></script>
+<script type="text/javascript" src="/static/js/common.js?v2.11"></script>
+<style type="text/css">
+    td.error {
+        background-color: #f04124;
+        border-color: #de2d0f;
+        color: #fff;
+    }
+
+    .ssuccess {
+        background-color: #3e961a;
+        border-color: #3e961a;
+        color: #fff;
+    }
+</style>
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?dfe329582bd10615cefe0ee724924e72";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+</html>

@@ -15,9 +15,13 @@ local aa = LoadLibrary('aa')
 
 function IndexController:index()
   local params = self:getRequest():getParams()
-  
+  local view = self:getView()
+  return view:display()
 end
-
+function IndexController:datacenter()
+    local view = self:getView()
+    return view:display()
+end
 function IndexController:indext()
     -- self.parent:fff()
     -- do return user_service:get() 

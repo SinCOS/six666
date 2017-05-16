@@ -5,6 +5,7 @@ local restful = {
 
 restful.v.GET = {
     {pattern = '/get', controller = 'index', action = 'get'},
+    {pattern = '/datacenter.html', controller = 'index', action = 'datacenter'},
 }
 
 restful.v.POST = {

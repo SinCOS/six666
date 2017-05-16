@@ -32,7 +32,7 @@ function Bootstrap:boot_list()
     return {
         -- Bootstrap.initWaf,
         -- Bootstrap.initErrorHandle,
-        -- Bootstrap.initRoute,
+           Bootstrap.initRoute,
         -- Bootstrap.initView,
         -- Bootstrap.initPlugin,
     }
