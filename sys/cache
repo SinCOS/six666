@@ -1,5 +1,5 @@
 [shared_dict]
-dict=idevz
+dict=stock_config
 exptime=100
 
 [memcached]

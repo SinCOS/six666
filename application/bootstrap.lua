@@ -1,3 +1,9 @@
+
+
+function check_auth()
+    return 'not login'
+end
+
 local simple = LoadV 'vanilla.v.routes.simple'
 local restful = LoadV 'vanilla.v.routes.restful'
 
@@ -17,7 +23,7 @@ function Bootstrap:initRoute()
     local restful_route = restful:new(self.dispatcher:getRequest())
     router:addRoute(restful_route, true)
     router:addRoute(simple_route)
-    -- print_r(router:getRoutes())
+    --print_r(router:getRoutes())
 end
 
 function Bootstrap:initView()
@@ -32,7 +38,7 @@ function Bootstrap:boot_list()
     return {
         -- Bootstrap.initWaf,
         -- Bootstrap.initErrorHandle,
-           Bootstrap.initRoute,
+        Bootstrap.initRoute,
         -- Bootstrap.initView,
         -- Bootstrap.initPlugin,
     }

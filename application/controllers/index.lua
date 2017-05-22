@@ -2,19 +2,11 @@
 -- local IndexController = Class('controllers.index')
 local IndexController = {}
 local user_service = LoadApplication('models.service.user')
-local aa = LoadLibrary('aa')
-
--- function IndexController:__construct()
--- -- self.parent:__construct()
---     print_r('===============IndexController:init===============')
--- -- --     -- self.aa = aa({info='ppppp'})
--- -- --     -- self.parent:__construct()
---     local get = self:getRequest():getParams()
---     self.d = '===============index===============' .. get.act
--- end
-
+local redis = LoadApplication('models.service.redis')
+local json = require('rapidjson')
+local json_encode = json.encode
+local json_decode = json.decode
 function IndexController:index()
-  local params = self:getRequest():getParams()
   local view = self:getView()
   return view:display()
 end
@@ -22,28 +14,15 @@ function IndexController:datacenter()
     local view = self:getView()
     return view:display()
 end
-function IndexController:indext()
-    -- self.parent:fff()
-    -- do return user_service:get() 
-    --           .. sprint_r(aa:idevzDobb()) 
-    --           .. sprint_r(Registry['v_sysconf']['db.client.read']['port']) 
-    --           -- .. sprint_r(self.aa:idevzDobb()) 
-    --           -- .. sprint_r(self.parent.aaa) 
-    --           .. Registry['APP_NAME']
-    --           -- .. self.d
-    -- end
+function IndexController:echarts()
     local view = self:getView()
-    local p = {}
-    p['vanilla'] = 'Welcome To Vanilla...' .. user_service:get()
-    p['zhoujing'] = 'Power by Openresty'
-    view:assign(p)
-    print_r(p)
     return view:display()
 end
-
-function IndexController:buested()
-  return 'hello buested.'
+function IndexController:getJlr()
+    local db = redis.new()
+    return json_encode(db:zrevrange("jlr:500",0,9,'withscores') or {})
 end
+
 
 -- curl http://localhost:9110/get?ok=yes
 function IndexController:get()

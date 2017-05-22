@@ -4,12 +4,14 @@ local restful = {
 }
 
 restful.v.GET = {
-    {pattern = '/get', controller = 'index', action = 'get'},
+    {pattern = '/jlr', controller = 'index', action = 'getJlr'},
     {pattern = '/datacenter.html', controller = 'index', action = 'datacenter'},
+    {pattern = '/vip_notify', controller = 'vip', action = 'notify'}
 }
 
 restful.v.POST = {
     {pattern = '/post', controller = 'index', action = 'post'},
+    {pattern = '/user/login', controller = 'user', action = 'postlogin'}
 }
 
 restful.v1.GET = {

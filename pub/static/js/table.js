@@ -200,7 +200,7 @@ Vue.component('datatables', {
                 },
                 stock_url: '/api/stock/jlr',
                 table: {
-                    stock_url: '/api/stock/jlr',
+                    stock_url: 'http://120.24.184.121/api/stock/jlr',
                     columns: [{
                         "data": null,
                         'orderable': false
