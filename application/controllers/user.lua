@@ -10,6 +10,12 @@ function UserController:login()
 	return view:display()
 end
 
+function UserController:postLogin()
+	local params = self:getRequest():getParams()
+	local username = params['username'] or ''
+	local passwd = params['passwd'] or ''
+	
+end
 
 -- user shutdown
 function UserController:logff()

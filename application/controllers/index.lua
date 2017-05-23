@@ -3,10 +3,15 @@
 local IndexController = {}
 local user_service = LoadApplication('models.service.user')
 local redis = LoadApplication('models.service.redis')
+
 local json = require('rapidjson')
 local json_encode = json.encode
 local json_decode = json.decode
+local mysql = LoadApplication('models.service.db')
 function IndexController:index()
+  local db = mysql.get()
+  local res, errmsg = db:query('select * from cc_user limit 1')
+  mysql.close()
   local view = self:getView()
   return view:display()
 end

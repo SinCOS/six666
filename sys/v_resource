@@ -14,6 +14,13 @@ dbname =user.info
 user =idevz
 passwd =idevz
 
+[mysql]
+host =127.0.0.1
+port =3306
+dbname =stock
+user =root
+passwd =123456
+
 [db.user.read]
 host =127.0.0.1
 port =3306
