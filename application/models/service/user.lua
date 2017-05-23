@@ -1,4 +1,4 @@
-local table_dao = LoadApplication('models.dao.mysql').new()
+local mysql = LoadApplication('models.dao.mysql').new()
 local UserService = {}
 local format = string.format 
 local _table = 'cc_user'
@@ -15,7 +15,7 @@ function UserService:find()
 end
 
 function UserService:create(user)
-	
+
 end
 
 return UserService
