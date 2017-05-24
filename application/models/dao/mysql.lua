@@ -4,9 +4,6 @@ local json = require('rapidjson')
 local config = Registry['sys_conf']['v_resource']['mysql']
 local _M = {}
 local function new()
-	if ngx.ctx['mysql'] then 
-		return ngx.ctx['mysql']
-	end
 	local client, errmsg = mysql:new()
 	if not client then return nil,errmsg end
 	client:set_timeout(2000)
@@ -25,13 +22,13 @@ local function new()
 	local ok, errmsg = client:connect(opt)
 	if not ok then return nil, errmsg end
 	
-	ok, errmsg = client:query('SET NAMES UTF8;')
-	ngx.ctx['mysql'] = client
+	-- ok, errmsg = client:query('SET NAMES UTF8;')
+	return client
+	--ngx.ctx['mysql'] = client
 
-	return ngx.ctx['mysql']
+	--return ngx.ctx['mysql']
 end
-
-local function close(keepalive)
+local function close(self,keepalive)
 	local keep = keepalive or true
 	if keep and ngx.ctx['mysql'] then
 		ngx.ctx['mysql']:set_keepalive(10000,100)
@@ -43,6 +40,14 @@ local function close(keepalive)
 	return true
 
 end
+local function exec(sql)
+	local client = new()
+	local res, err, errno, sqlstate = client:query(sql)
+	close()
+	return res, err, errno, sqlstate
+end
+
 _M.close = close
 _M.get = new
+_M.exec = exec
 return _M
