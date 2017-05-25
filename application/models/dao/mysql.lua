@@ -1,5 +1,6 @@
 
 local mysql = require('resty.mysql')
+local ctx = ngx.ctx
 local json = require('rapidjson')
 local config = Registry['sys_conf']['v_resource']['mysql']
 local _M = {}
@@ -43,7 +44,7 @@ end
 local function exec(sql)
 	local client = new()
 	local res, err, errno, sqlstate = client:query(sql)
-	close()
+	client:set_keepalive(10000,100)
 	return res, err, errno, sqlstate
 end
 

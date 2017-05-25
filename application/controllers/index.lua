@@ -9,7 +9,6 @@ local json_encode = json.encode
 local json_decode = json.decode
 
 function IndexController:index()
-  user_service:get(1)
   local view = self:getView()
   return view:display()
 end
