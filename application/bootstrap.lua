@@ -1,15 +1,8 @@
 
-
-function check_auth()
-    return 'not login'
-end
-
-function islogin()
-    return false
-end
-
 local simple = LoadV 'vanilla.v.routes.simple'
 local restful = LoadV 'vanilla.v.routes.restful'
+local auth_lib = LoadLibrary 'middle'
+auth = auth_lib()
 
 local Bootstrap = Class('application.bootstrap')
 

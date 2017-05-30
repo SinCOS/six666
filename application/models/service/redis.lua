@@ -192,7 +192,7 @@ local function do_command(self, cmd, ... )
     if not ok or err then
         return nil, err
     end
-
+    redis:select(db_index)
     local fun = redis[cmd]
     local result, err = fun(redis, ...)
     if not result or err then
@@ -203,7 +203,6 @@ local function do_command(self, cmd, ... )
     if is_redis_null(result) then
         result = nil
     end
-
     self.set_keepalive_mod(redis)
 
     return result, err
