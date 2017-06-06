@@ -1,44 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
-</head>
-
-<body>
-    {(parital/nav.html)}
-    <div class="container" id='app'>
-        {-raw-}
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3" style="margin-top: 50px;">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">用户登录</h3>
-                    </div>
-                    <div class="panel-body">
-                        <form action="" method="POST" role="form">
-                            
-                            <div class="form-group">
-                                <label for="">用户名或邮箱</label>
-                                <input type="text" class="form-control" name="username" placeholder="Input field">
-                            </div>
-                             <div class="form-group">
-                                <label for="">密  码</label>
-                                <input type="password" class="form-control" name="password" placeholder="Input field">
-                            </div>
-                        
-                            <button type="submit" class="btn btn-primary">提交</button>
-                        </form>
-                    </div>
+{% layout = "base.html" %} {-main-}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3" style="margin-top: 50px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">用户登录</h3>
+                </div>
+                <div class="panel-body">
+                    <form action="" method="POST" role="form" class="layui-form">
+                        <div class="form-group">
+                            <label for="">用户名或邮箱</label>
+                            <input type="text" class="form-control" lay-verify="required" name="username" placeholder="Input field">
+                        </div>
+                        <div class="form-group">
+                            <label for="">密 码</label>
+                            <input type="password" class="form-control" name="password" lay-verify='pass' placeholder="Input field">
+                        </div>
+                        <button type="submit" class="btn btn-primary" lay-submit="" lay-filter="demo2">提交</button>
+                    </form>
                 </div>
             </div>
         </div>
-          
-        {-raw-}
     </div>
-</body>
-<script type="text/javascript" src="/static/js/jq.js"></script>
-
-</html>
+</div>
+{-main-} {-js-}
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript">
+layui.use(['form', 'layer'], function() {
+    var form = layui.form();
+    var layer = layui.layer;
+      form.verify({
+       username: function (value) {
+            if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                return '用户名不能有特殊字符';
+            }
+            if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                return '用户名首尾不能出现下划线\'_\'';
+            }
+            if (/^\d+\d+\d$/.test(value)) {
+                return '用户名不能全为数字';
+            }
+            if (/([\s])/.test(value)) {
+                return '用户名不能出现空格';
+            }
+        },
+        pass: [/(.+){6,12}$/, '密码必须6到12位'],
+    }
+    });
+    form.on('submit(demo2)', function(data) {
+        layer.alert(JSON.stringify(data.field), {
+            title: '最终的提交信息'
+        })
+        return false;
+    });
+});
+</script>
+{-js-}

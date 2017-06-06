@@ -14,6 +14,9 @@ end
 function UserController:jlr()
 	local redis = loadModel('service.redis')
 end
+function UserController:info()
+	
+end
 function UserController:postCategory()
 	local user_id = auth:check_login()
 	local category = LoadModel('service.category')

@@ -24,11 +24,19 @@
                </div>
             </div>
             <div class="col-md-3 pull-right">
-            	<ul class="list-group" >
-            		<template v-for="item in jlr_list">
-            		<li class="list-group-item" v-text="item.cpy_id + '------' + item.jlr "></li>
-            		</template>
-            	</ul>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">净流入每分钟大于500万</h4>
+                    </div>
+                    <div class="panel-body">
+                       <ul class="list-group" >
+                    <template v-for="item in jlr_list">
+                    <li class="list-group-item" v-text="item.cpy_id + '------' + item.jlr "></li>
+                    </template>
+                </ul>
+                    </div>
+                </div>
+            	
             </div>
         </div>
     </div>
